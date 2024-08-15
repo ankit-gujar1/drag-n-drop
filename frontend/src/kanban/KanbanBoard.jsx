@@ -1,11 +1,16 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ColContainer from './ColContainer';
-import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { closestCorners, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import Task from './Task';
+// import { getColor } from '../utils/colors';
 
 export const KanbanBoard = () => {
+
+    const [color,setColor]=useState();
+    // const [n,setN]=useState(0);
+    
 
     const [cols, setCols] = useState([]);
     const [activeCol, setActiveCol] = useState(null);
@@ -30,6 +35,9 @@ export const KanbanBoard = () => {
     }
 
     const createCol = () => {
+        // setN(n+1);
+        // setColor(getColor());
+        
         const colToAdd = {
             id: generateId(),
             // title: `Col ${cols.length + 1}`Double Click to Edit
@@ -179,35 +187,36 @@ export const KanbanBoard = () => {
     }
 
     return (
-        <div className='flex items-center min-h-screen m-auto overflow-x-auto overflow-y-hidden w-full'>
-            <div className='mx-auto flex gap-4'>
-                <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver} sensors={sensors}>
+        <div className='flex flex-col items-center min-h-screen justify-center px-4 overflow-y-hidden gap-4'>
+            <div className='flex gap-4 overflow-x-auto w-[95%]'>
+                <DndContext collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver} sensors={sensors}>
                     <div className='flex gap-4'>
                         <SortableContext items={colId}>
                             {
                                 cols && cols.map((i) => (
-                                    <ColContainer col={i} deleteCol={deleteCol} key={i.id} updateTitle={updateTitle} createTask={createTask} tasks={tasks.filter((j) => j.colId === i.id)} deleteTask={deleteTask} updateTask={updateTask} />
+                                    <ColContainer col={i} deleteCol={deleteCol} bgColor={setColor} key={i.id} updateTitle={updateTitle} createTask={createTask} tasks={tasks.filter((j) => j.colId === i.id)} deleteTask={deleteTask} updateTask={updateTask}/>
                                 ))
                             }
                         </SortableContext>
                     </div>
-                    <button className='px-8 py-3 bg-black text-white rounded-lg font-bold flex items-center' onClick={createCol}>
-                        <svg className='size-5 font-bold me-3' viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>plus-circle</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" sketch:type="MSPage"> <g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-464.000000, -1087.000000)" fill="#ffffff"> <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z" id="plus-circle" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg>
-                        Add List
-                    </button>
+
                     {createPortal(
                         <DragOverlay>
                             {activeCol && (
-                                <ColContainer col={activeCol} deleteCol={deleteCol} tasks={tasks.filter((j) => j.colId === activeCol.id)} deleteTask={deleteTask} updateTask={updateTask} />
+                                <ColContainer col={activeCol} deleteCol={deleteCol} bgColor={setColor} tasks={tasks.filter((j) => j.colId === activeCol.id)} deleteTask={deleteTask} updateTask={updateTask} />
                             )}
                             {activeTask && (
-                                <Task task={activeTask} />
+                                <Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask} color={color}/>
                             )}
                         </DragOverlay>,
                         document.body
                     )}
                 </DndContext>
             </div>
+            <button className='px-8 py-3 bg-black text-white rounded-lg font-bold flex items-center' onClick={createCol}>
+                <svg className='size-5 font-bold me-3' viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>plus-circle</title> <desc>Created with Sketch Beta.</desc> <defs> </defs> <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" sketch:type="MSPage"> <g id="Icon-Set" sketch:type="MSLayerGroup" transform="translate(-464.000000, -1087.000000)" fill="#ffffff"> <path d="M480,1117 C472.268,1117 466,1110.73 466,1103 C466,1095.27 472.268,1089 480,1089 C487.732,1089 494,1095.27 494,1103 C494,1110.73 487.732,1117 480,1117 L480,1117 Z M480,1087 C471.163,1087 464,1094.16 464,1103 C464,1111.84 471.163,1119 480,1119 C488.837,1119 496,1111.84 496,1103 C496,1094.16 488.837,1087 480,1087 L480,1087 Z M486,1102 L481,1102 L481,1097 C481,1096.45 480.553,1096 480,1096 C479.447,1096 479,1096.45 479,1097 L479,1102 L474,1102 C473.447,1102 473,1102.45 473,1103 C473,1103.55 473.447,1104 474,1104 L479,1104 L479,1109 C479,1109.55 479.447,1110 480,1110 C480.553,1110 481,1109.55 481,1109 L481,1104 L486,1104 C486.553,1104 487,1103.55 487,1103 C487,1102.45 486.553,1102 486,1102 L486,1102 Z" id="plus-circle" sketch:type="MSShapeGroup"> </path> </g> </g> </g></svg>
+                Add List
+            </button>
         </div>
     )
 }
