@@ -10,8 +10,6 @@ import { getColor } from '../utils/colors';
 export const KanbanBoard = () => {
 
     const [color, setColor] = useState();
-    // const [n,setN]=useState(0);
-
 
     const [cols, setCols] = useState([]);
     const [activeCol, setActiveCol] = useState(null);
@@ -36,8 +34,6 @@ export const KanbanBoard = () => {
     }
 
     const createCol = () => {
-        // setN(n+1);
-        // setColor(getColor());
 
         const colToAdd = {
             id: generateId(),
@@ -50,18 +46,15 @@ export const KanbanBoard = () => {
     }
 
     const handleDragStart = (e) => {
-        console.log('handleDragStart', e);
+        // console.log('handleDragStart', e);
         if (e.active.data.current?.type === 'Col') {
             setActiveCol(e.active.data.current.col);
-            setColor(e.active.data.current.color);
-            // console.log(activeCol);
             return;
         }
 
         if (e.active.data.current?.type === "Task") {
             setActiveTask(e.active.data.current.task);
             setColor(e.active.data.current.color);
-            // console.log(color);
             return;
         }
     }
@@ -201,7 +194,7 @@ export const KanbanBoard = () => {
                         <SortableContext items={colId}>
                             {
                                 cols && cols.slice().reverse().map((i) => (
-                                    <ColContainer col={i} deleteCol={deleteCol} key={i.id} updateTitle={updateTitle} createTask={createTask} bgColor={color} setBgColor={setColor} tasks={tasks.filter((j) => j.colId === i.id)} deleteTask={deleteTask} updateTask={updateTask} />
+                                    <ColContainer col={i} deleteCol={deleteCol} key={i.id} updateTitle={updateTitle} createTask={createTask} tasks={tasks.filter((j) => j.colId === i.id)} deleteTask={deleteTask} updateTask={updateTask} />
                                 ))
                             }
                         </SortableContext>
@@ -210,7 +203,7 @@ export const KanbanBoard = () => {
                     {createPortal(
                         <DragOverlay>
                             {activeCol && (
-                                <ColContainer col={activeCol} deleteCol={deleteCol} tasks={tasks.filter((j) => j.colId === activeCol.id)} deleteTask={deleteTask} updateTask={updateTask} bgColor={'bg-violet-500'} setBgColor={setColor} />
+                                <ColContainer col={activeCol} deleteCol={deleteCol} tasks={tasks.filter((j) => j.colId === activeCol.id)} deleteTask={deleteTask} updateTask={updateTask} />
                             )}
                             {activeTask && (
                                 <Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask} color={color} />
