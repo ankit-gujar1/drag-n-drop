@@ -5,15 +5,16 @@ import Task from './Task';
 import { getColor } from '../utils/colors';
 
 const ColContainer = ({ col, deleteCol, updateTitle, createTask, tasks, deleteTask, updateTask, bgColor }) => {
-
-    const [color,setColor]=useState(getColor());
-    bgColor(color)
+    const {color}=col;
+    // const [color,setColor]=useState(getColor());
+    // bgColor(color)
     const { attributes, listeners, transform, transition, setNodeRef, isDragging } = useSortable({
         id: col.id,
         //setting data in Sortable/Draggable things, when onDragStart function get called then event of onDragStart will contain this custom data
         data: {
             type: 'Col',
-            col
+            col,
+            color
         }
     });
 
@@ -29,7 +30,7 @@ const ColContainer = ({ col, deleteCol, updateTitle, createTask, tasks, deleteTa
 
     if (isDragging) {
         return (
-            <div style={style} ref={setNodeRef} className={` bg-black text-white w-72 rounded-lg h-[32rem] flex flex-col opacity-40 border-2`}></div>
+            <div style={style} ref={setNodeRef} className={` bg-black text-white w-72 rounded-lg h-[32rem] flex flex-col opacity-40 border-2 ${color}`}></div>
         )
     }
 

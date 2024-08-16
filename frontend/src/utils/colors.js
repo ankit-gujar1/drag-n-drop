@@ -5,6 +5,12 @@ const color=[
     'bg-green-500',
     'bg-fuchsia-500',
     'bg-violet-500',
+    'bg-red-500',
+    'bg-pink-500',
+    'bg-cyan-500',
+    'bg-green-500',
+    'bg-fuchsia-500',
+    'bg-violet-500',
 ];
 
 import { Random } from "random-js";

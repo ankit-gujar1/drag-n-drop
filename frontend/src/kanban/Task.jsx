@@ -11,7 +11,8 @@ const Task = ({ task, deleteTask, updateTask, color }) => {
         //setting data in Sortable/Draggable things, when onDragStart function get called then event of onDragStart will contain this custom data
         data: {
             type: 'Task',
-            task
+            task,
+            color
         }
     });
 

@@ -4,13 +4,14 @@ import { closestCorners, DndContext, DragOverlay, PointerSensor, useSensor, useS
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import Task from './Task';
+import { getColor } from '../utils/colors';
 // import { getColor } from '../utils/colors';
 
 export const KanbanBoard = () => {
 
-    const [color,setColor]=useState();
+    const [color, setColor] = useState();
     // const [n,setN]=useState(0);
-    
+
 
     const [cols, setCols] = useState([]);
     const [activeCol, setActiveCol] = useState(null);
@@ -37,25 +38,30 @@ export const KanbanBoard = () => {
     const createCol = () => {
         // setN(n+1);
         // setColor(getColor());
-        
+
         const colToAdd = {
             id: generateId(),
             // title: `Col ${cols.length + 1}`Double Click to Edit
-            title: 'Click to Edit Title'
+            title: 'Click to Edit Title',
+            color: getColor()
         };
 
         setCols([...cols, colToAdd]);
     }
 
     const handleDragStart = (e) => {
-        // console.log('handleDragStart', e);
+        console.log('handleDragStart', e);
         if (e.active.data.current?.type === 'Col') {
             setActiveCol(e.active.data.current.col);
+            setColor(e.active.data.current.color);
+            // console.log(activeCol);
             return;
         }
 
         if (e.active.data.current?.type === "Task") {
             setActiveTask(e.active.data.current.task);
+            setColor(e.active.data.current.color);
+            // console.log(color);
             return;
         }
     }
@@ -66,6 +72,7 @@ export const KanbanBoard = () => {
         //imp to null or you will get weird overlays
         setActiveCol(null);
         setActiveTask(null);
+        setColor(null);
 
         const { active, over } = e;
         if (!over) return;
@@ -193,8 +200,8 @@ export const KanbanBoard = () => {
                     <div className='flex gap-4'>
                         <SortableContext items={colId}>
                             {
-                                cols && cols.map((i) => (
-                                    <ColContainer col={i} deleteCol={deleteCol} bgColor={setColor} key={i.id} updateTitle={updateTitle} createTask={createTask} tasks={tasks.filter((j) => j.colId === i.id)} deleteTask={deleteTask} updateTask={updateTask}/>
+                                cols && cols.slice().reverse().map((i) => (
+                                    <ColContainer col={i} deleteCol={deleteCol} key={i.id} updateTitle={updateTitle} createTask={createTask} bgColor={color} setBgColor={setColor} tasks={tasks.filter((j) => j.colId === i.id)} deleteTask={deleteTask} updateTask={updateTask} />
                                 ))
                             }
                         </SortableContext>
@@ -203,10 +210,10 @@ export const KanbanBoard = () => {
                     {createPortal(
                         <DragOverlay>
                             {activeCol && (
-                                <ColContainer col={activeCol} deleteCol={deleteCol} bgColor={setColor} tasks={tasks.filter((j) => j.colId === activeCol.id)} deleteTask={deleteTask} updateTask={updateTask} />
+                                <ColContainer col={activeCol} deleteCol={deleteCol} tasks={tasks.filter((j) => j.colId === activeCol.id)} deleteTask={deleteTask} updateTask={updateTask} bgColor={'bg-violet-500'} setBgColor={setColor} />
                             )}
                             {activeTask && (
-                                <Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask} color={color}/>
+                                <Task task={activeTask} deleteTask={deleteTask} updateTask={updateTask} color={color} />
                             )}
                         </DragOverlay>,
                         document.body
