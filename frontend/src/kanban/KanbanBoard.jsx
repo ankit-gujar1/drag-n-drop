@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import ColContainer from './ColContainer';
-import { closestCorners, DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { closestCorners, DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { createPortal } from 'react-dom';
 import Task from './Task';
@@ -17,6 +17,19 @@ export const KanbanBoard = () => {
     const [tasks, setTasks] = useState([]);
     const [activeTask, setActiveTask] = useState(null);
     // console.log(activeTask);
+
+    useEffect(() => {
+        const c = JSON.parse(localStorage.getItem("cols"));
+        const t = JSON.parse(localStorage.getItem("tasks"));
+
+        if (c && c.length > 0) setCols(c);
+        if (t && t.length > 0) setTasks(t);
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem("cols", JSON.stringify(cols));
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+    }, [tasks, cols])
 
     const colId = useMemo(() => cols.map((i) => i.id), [cols]);
 
@@ -144,6 +157,11 @@ export const KanbanBoard = () => {
             activationConstraint: {
                 distance: 3
             }
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                distance: 3
+            }
         })
     )
 
@@ -187,10 +205,10 @@ export const KanbanBoard = () => {
     }
 
     return (
-        <div className='flex flex-col items-center min-h-screen justify-center px-4 overflow-y-hidden gap-4'>
-            <div className='flex gap-4 overflow-x-auto w-[95%]'>
+        <div className='flex flex-col items-center min-h-screen justify-center px-4 overflow-y-hidden gap-4 my-14 sm:my-0'>
+            <div className='flex gap-4 overflow-x-auto w-full justify-center items-center sm:justify-normal sm:items-start sm:w-[95%]'>
                 <DndContext collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver} sensors={sensors}>
-                    <div className='flex gap-4'>
+                    <div className='flex flex-col-reverse sm:flex-row gap-4'>
                         <SortableContext items={colId}>
                             {
                                 cols && cols.slice().reverse().map((i) => (

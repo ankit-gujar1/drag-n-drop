@@ -29,14 +29,14 @@ const ColContainer = ({ col, deleteCol, updateTitle, createTask, tasks, deleteTa
 
     if (isDragging) {
         return (
-            <div style={style} ref={setNodeRef} className={` bg-black text-white w-72 rounded-lg h-[32rem] flex flex-col opacity-40 border-2 ${color}`}></div>
+            <div style={style} ref={setNodeRef} className={` bg-black text-white w-72 rounded-lg h-[32rem] flex flex-col opacity-40 border-2 ${color} touch-none`}></div>
         )
     }
 
     return (
         // key is IMP for smooth animation
-        <div style={style} ref={setNodeRef} key={col.id} className='bg-gray-900 text-white w-72 rounded-lg h-[32rem] flex flex-col'>
-            <div {...attributes} {...listeners} className={`flex justify-around items-center py-4 rounded-lg rounded-b-none ${color}`} onClick={() => setEditMode(true)}>
+        <div style={style} ref={setNodeRef} key={col.id} className='bg-gray-900 text-white w-72 rounded-lg h-[32rem] flex flex-col touch-none'>
+            <div {...attributes} {...listeners} className={`flex justify-around items-center py-4 rounded-lg rounded-b-none ${color} touch-none`} onClick={() => setEditMode(true)}>
                 {/* <p>0</p> */}
                 {!editMode && <p className='font-bold'>{col.title}</p>}
                 {editMode &&

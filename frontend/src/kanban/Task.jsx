@@ -23,12 +23,12 @@ const Task = ({ task, deleteTask, updateTask, color }) => {
 
     if (isDragging) {
         return (
-            <div ref={setNodeRef} style={style} className={`flex justify-between items-center mx-1 rounded-lg ${color} h-28 py-14 px-4 opacity-40 text-white`} onClick={() => setEditMode(false)}></div>
+            <div ref={setNodeRef} style={style} className={`flex justify-between items-center mx-1 rounded-lg ${color} h-28 py-14 px-4 opacity-40 text-white touch-none`} onClick={() => setEditMode(false)}></div>
         );
     }
 
     return (
-        <div ref={setNodeRef} style={style} {...attributes} {...listeners} key={task.id} className={`flex justify-between items-center mx-1 rounded-lg ${color} h-28 py-14 px-4 relative group`} onClick={() => setEditMode(true)}>
+        <div ref={setNodeRef} style={style} {...attributes} {...listeners} key={task.id} className={`flex justify-between items-center mx-1 rounded-lg ${color} h-28 py-14 px-4 relative group touch-none`} onClick={() => setEditMode(true)}>
             {!editMode && <p className='text-white'>{task.task}</p>}
             {editMode && <input value={task.task} autoFocus onBlur={() => setEditMode(false)} type="text" className='bg-black text-white w-full mx-2' onChange={(e) => updateTask(e.target.value, task.id)}
                 onKeyDown={(e) => {
